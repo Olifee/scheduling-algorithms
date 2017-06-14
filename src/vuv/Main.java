@@ -103,7 +103,8 @@ class Main {
 	public static double getScore(Swap swap) {
 		int beforeSwap = swap.studentA.getRatingForCourse(swap.courseA)+swap.studentB.getRatingForCourse(swap.courseB);
 		int afterSwap = swap.studentA.getRatingForCourse(swap.courseB)+swap.studentB.getRatingForCourse(swap.courseA);
-		return afterSwap-beforeSwap;
+		System.out.println("Before: "+beforeSwap+" After: "+afterSwap);
+		return (afterSwap-beforeSwap);
 	}
 	
 	public static boolean courseAvailable(Course course, Map<Student, Course> assignments) {

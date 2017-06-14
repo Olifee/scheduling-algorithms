@@ -101,13 +101,13 @@ class Main {
 	}
 
 	public static double getScore(Swap swap) {
-		int beforeSwap = swap.studentA.getRatingForCourse(swap.courseA)+swap.studentA.getRatingForCourse(swap.courseB);
-		int afterSwap = swap.studentA.getRatingForCourse(swap.courseB)+swap.studentA.getRatingForCourse(swap.courseA);
+		int beforeSwap = swap.studentA.getRatingForCourse(swap.courseA)+swap.studentB.getRatingForCourse(swap.courseB);
+		int afterSwap = swap.studentA.getRatingForCourse(swap.courseB)+swap.studentB.getRatingForCourse(swap.courseA);
 		return afterSwap-beforeSwap;
 	}
 	
 	public static boolean courseAvailable(Course course, Map<Student, Course> assignments) {
-		return (course.capacity-assignments.values().stream().filter(c -> c.name.equals(course)).collect(Collectors.toList()).size() >0);
+		return (course.capacity-assignments.values().stream().filter(c -> c.name.equals(course.name)).collect(Collectors.toList()).size() >0);
 	}
 	
 	public static Course getAvailableCourse(StartData d, Map<Student, Course> assignments) {

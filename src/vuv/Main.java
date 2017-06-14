@@ -28,31 +28,95 @@ class Main {
 	}
 
 	public static Map<Student, Course> solve(StartData d) {
-		return null;
+		Map<Student, Course> assignments = new HashMap<Student, Course>();
+		for (Student s : sortStudents(d)) {
+			assignments.put(s, getBestCourse(d, assignments, s));
+		}
+		boolean posSwapsPossible = true;
+		while (posSwapsPossible) {
+			Swap swap = getBestSwap(getAllSwaps(getWorstAssignedStudent(assignments), assignments));
+			if (getScore(swap)>0) {
+				assignments.remove(swap.studentA);
+				assignments.remove(swap.studentB);
+				assignments.put(swap.studentA, swap.courseB);
+				assignments.put(swap.studentB, swap.courseA);
+			}
+			else {
+				posSwapsPossible = false;
+			}
+		}
+		return assignments;
 	}
 
 	public static List<Student> sortStudents(StartData d) {
-		return null;
+		return d.students.stream().sorted(Comparator.comparingInt(Student::getFirstCourseCapacity)).collect(Collectors.toList());
 	}
 
 	public static List<Swap> getAllSwaps(Student s, Map<Student, Course> assignments) {
-		return null;
+		List<Swap> result = new ArrayList<>();
+		List<Student> otherStudents = assignments.keySet().stream().filter(os -> !os.name.equals(s.name)).collect(Collectors.toList());
+		for (Student os: otherStudents) {
+			result.add(new Swap(s, os, assignments.get(s), assignments.get(os)));
+		}
+		return result;
 	}
 
 	public static Swap getBestSwap(List<Swap> swaps) {
-		return null;
+		Swap bestSwap = swaps.get(0);
+		for (Swap swap : swaps) {
+			if (getScore(swap)>getScore(bestSwap)) {
+				bestSwap = swap;
+			}
+		}
+		return bestSwap;
 	}
 
 	public static Student getWorstAssignedStudent(Map<Student, Course> assignments) {
-		return null;
+		if (assignments.size()==0) {
+			return null;
+		}
+		Student worstAssignedStudent = assignments.keySet().stream().collect(Collectors.toList()).get(0);
+		for (Student s : assignments.keySet()) {
+			if (s.getRating(assignments)<worstAssignedStudent.getRating(assignments)) {
+				worstAssignedStudent = s;
+			}
+		}
+		return worstAssignedStudent;
 	}
 
 	public static Course getBestCourse(StartData d, Map<Student, Course> assignments, Student s) {
-		return null;
+		if (courseAvailable(s.courses.get(0), assignments)) {
+			return s.courses.get(0);
+		}
+		else if (courseAvailable(s.courses.get(1), assignments)) {
+			return s.courses.get(1);
+		}
+		else if (courseAvailable(s.courses.get(2), assignments)) {
+			return s.courses.get(2);
+		}
+		else {
+			return getAvailableCourse(d, assignments);
+		}
+		
 	}
 
 	public static double getScore(Swap swap) {
-		return 0;
+		int beforeSwap = swap.studentA.getRatingForCourse(swap.courseA)+swap.studentA.getRatingForCourse(swap.courseB);
+		int afterSwap = swap.studentA.getRatingForCourse(swap.courseB)+swap.studentA.getRatingForCourse(swap.courseA);
+		return afterSwap-beforeSwap;
+	}
+	
+	public static boolean courseAvailable(Course course, Map<Student, Course> assignments) {
+		return (course.capacity-assignments.values().stream().filter(c -> c.name.equals(course)).collect(Collectors.toList()).size() >0);
+	}
+	
+	public static Course getAvailableCourse(StartData d, Map<Student, Course> assignments) {
+		for (Course c : d.courses) {
+			if (courseAvailable(c, assignments)) {
+				return c;
+			}
+		}
+		return null;
 	}
 
 }

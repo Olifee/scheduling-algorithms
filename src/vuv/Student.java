@@ -43,13 +43,13 @@ public class Student {
 	}
 
 	public int getRatingForCourse(Course c) {
-		if (c.name.equals(this.courses.get(0))) {
+		if (c.name.equals(this.courses.get(0).name)) {
 			return 50;
 		}
-		if (c.name.equals(this.courses.get(1))) {
+		if (c.name.equals(this.courses.get(1).name)) {
 			return 45;
 		}
-		if (c.name.equals(this.courses.get(2))) {
+		if (c.name.equals(this.courses.get(2).name)) {
 			return 30;
 		}
 		return 0;
